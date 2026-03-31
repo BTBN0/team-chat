@@ -5,6 +5,12 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const ALLOWED_TYPES = [
+  "image/jpeg", "image/png", "image/gif", "image/webp",
+  "application/pdf", "text/plain",
+  "audio/webm", "audio/mp4", "audio/mpeg", "audio/ogg", "audio/wav",
+];
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../uploads"));
@@ -17,16 +23,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowed = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "application/pdf",
-    "text/plain",
-  ];
-
-  if (allowed.includes(file.mimetype)) {
+  if (ALLOWED_TYPES.includes(file.mimetype)) {  // ← use ALLOWED_TYPES here
     cb(null, true);
   } else {
     cb(new Error("File type not allowed"), false);
@@ -36,5 +33,5 @@ const fileFilter = (req, file, cb) => {
 export const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 }, // bumped to 10MB for audio
 });

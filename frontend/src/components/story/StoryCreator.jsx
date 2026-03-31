@@ -1,195 +1,221 @@
-import { useState, useRef } from 'react'
-import { useStory } from '../../context/StoryContext'
-import { useAuth } from '../../context/AuthContext'
-import { SKINS } from '../profile/UserProfile'
+import { useState, useRef } from "react";
+import { useStory } from "../../context/StoryContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useTheme } from "../../context/ThemeContext.jsx";
 
 const GRADIENTS = [
-  { label: 'Sunset',   value: 'from-orange-400 via-pink-500 to-rose-600' },
-  { label: 'Ocean',    value: 'from-blue-500 via-cyan-400 to-teal-500' },
-  { label: 'Forest',   value: 'from-green-500 via-emerald-400 to-teal-500' },
-  { label: 'Purple',   value: 'from-violet-600 via-purple-500 to-fuchsia-600' },
-  { label: 'Fire',     value: 'from-yellow-400 via-orange-500 to-red-600' },
-  { label: 'Midnight', value: 'from-slate-800 via-blue-900 to-slate-900' },
-  { label: 'Rose',     value: 'from-pink-400 via-rose-400 to-red-400' },
-  { label: 'Aurora',   value: 'from-green-400 via-teal-300 to-cyan-500' },
-]
+  { label:"Navy",    css:"linear-gradient(135deg,#080B2A,#1B3066,#2a4080)", tw:"from-[#080B2A] via-[#1B3066] to-[#2a4080]" },
+  { label:"Slate",   css:"linear-gradient(135deg,#1B3066,#6B7399,#b8bdd8)", tw:"from-[#1B3066] via-[#6B7399] to-[#b8bdd8]" },
+  { label:"Violet",  css:"linear-gradient(135deg,#7c3aed,#a855f7,#c026d3)", tw:"from-violet-600 via-purple-500 to-fuchsia-600" },
+  { label:"Ocean",   css:"linear-gradient(135deg,#0ea5e9,#22d3ee,#14b8a6)", tw:"from-blue-500 via-cyan-400 to-teal-500" },
+  { label:"Sunset",  css:"linear-gradient(135deg,#fb923c,#ec4899,#e11d48)", tw:"from-orange-400 via-pink-500 to-rose-600" },
+  { label:"Forest",  css:"linear-gradient(135deg,#22c55e,#34d399,#14b8a6)", tw:"from-green-500 via-emerald-400 to-teal-500" },
+  { label:"Fire",    css:"linear-gradient(135deg,#facc15,#f97316,#dc2626)", tw:"from-yellow-400 via-orange-500 to-red-600" },
+  { label:"Rose",    css:"linear-gradient(135deg,#f472b6,#fb7185,#f87171)", tw:"from-pink-400 via-rose-400 to-red-400" },
+];
 
-const TEXT_SIZES = [
-  { label: 'S', class: 'text-xl' },
-  { label: 'M', class: 'text-2xl' },
-  { label: 'L', class: 'text-3xl' },
-]
+const SKINS = [
+  {bg:"#FDDBB4",fg:"#8B5E3C"},{bg:"#F5C99A",fg:"#7A4A2A"},
+  {bg:"#E8A87C",fg:"#6B3820"},{bg:"#C68642",fg:"#3E1F00"},
+  {bg:"#8D5524",fg:"#FFD5A8"},{bg:"#4A2912",fg:"#F5C99A"},
+  {bg:"#DBEAFE",fg:"#1D4ED8"},{bg:"#EDE9FE",fg:"#7C3AED"},
+  {bg:"#FCE7F3",fg:"#BE185D"},{bg:"#D1FAE5",fg:"#065F46"},
+];
 
 export default function StoryCreator({ onClose }) {
-  const { addStory } = useStory()
-  const { user, profile } = useAuth()
-  const skin = SKINS[profile?.skinIdx ?? 0] || SKINS[0]
-  const [text, setText]   = useState('')
-  const [bg,   setBg]     = useState(GRADIENTS[0].value)
-  const [sizeIdx, setSizeIdx] = useState(1)
-  const [imgPreview, setImgPreview] = useState(null)
-  const [posting, setPosting] = useState(false)
-  const fileRef = useRef(null)
+  const { addStory } = useStory();
+  const { user, profile } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
-  const handleImg = (e) => {
-    const f = e.target.files?.[0]
-    if (!f) return
-    setImgPreview(URL.createObjectURL(f))
-    setText('')
-  }
+  const [text,     setText]     = useState("");
+  const [bgIdx,    setBgIdx]    = useState(0);
+  const [fontSize, setFontSize] = useState(26);
+  const [imgPrev,  setImgPrev]  = useState(null);
+  const [posting,  setPosting]  = useState(false);
+  const fileRef = useRef(null);
+
+  const skin = SKINS[profile?.skinIdx ?? 0] || SKINS[0];
+  const bg   = GRADIENTS[bgIdx];
+
+  const P = {
+    panel:  isDark ? "#0D1035" : "#ffffff",
+    panel2: isDark ? "#111540" : "#f4f4fb",
+    border: isDark ? "#1B3066" : "#c8c8dc",
+    text:   isDark ? "#F0F0F5" : "#080B2A",
+    muted:  isDark ? "#6B7399" : "#6B7399",
+  };
+
+  const handleImg = e => {
+    const f = e.target.files?.[0]; if (!f) return;
+    setImgPrev(URL.createObjectURL(f)); setText("");
+  };
 
   const handlePost = async () => {
-    if (!text.trim() && !imgPreview) return
-    setPosting(true)
-    await new Promise(r => setTimeout(r, 400))
-    addStory({
-      type: imgPreview ? 'image' : 'text',
-      content: text,
-      bg,
-      image: imgPreview,
-    })
-    setPosting(false)
-    onClose()
-  }
-
-  const textSizeClass = TEXT_SIZES[sizeIdx].class
+    if (!text.trim() && !imgPrev) return;
+    setPosting(true);
+    await new Promise(r => setTimeout(r, 350));
+    addStory({ type: imgPrev ? "image" : "text", content: text, bg: bg.tw, image: imgPrev });
+    setPosting(false); onClose();
+  };
 
   return (
     <div
-      className="fixed inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-md"
       onClick={onClose}
+      style={{
+        position:"fixed", inset:0, zIndex:150,
+        background:"rgba(8,11,42,0.85)",
+        backdropFilter:"blur(16px)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        animation:"fadeIn .15s ease both",
+      }}
     >
       <div
-        className="relative flex flex-col gap-0 rounded-3xl overflow-hidden shadow-2xl"
-        style={{ width: 'min(380px, 95vw)', animation: 'fadeUp .25s cubic-bezier(0.22,1,0.36,1)' }}
-        onClick={e => e.stopPropagation()}
+        onClick={e=>e.stopPropagation()}
+        style={{
+          width:"min(380px,95vw)",
+          borderRadius:24, overflow:"hidden",
+          boxShadow:"0 32px 80px rgba(8,11,42,0.7)",
+          animation:"fadeUp .25s cubic-bezier(0.22,1,0.36,1) both",
+        }}
       >
         {/* Preview */}
-        <div className={`relative bg-gradient-to-br ${bg} flex items-center justify-center`}
-          style={{ height: 'min(520px, 70vh)' }}>
-
-          {imgPreview ? (
-            <img src={imgPreview} alt="" className="absolute inset-0 w-full h-full object-cover"/>
-          ) : (
-            <p className={`text-white font-black text-center px-8 leading-tight tracking-tight drop-shadow-lg ${textSizeClass}`}
-              style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
-              {text || <span className="text-white/40 text-lg font-medium">Текст бичих…</span>}
-            </p>
+        <div style={{
+          position:"relative", height:"min(500px,65vh)",
+          background: imgPrev ? "#000" : bg.css,
+          display:"flex", alignItems:"center", justifyContent:"center",
+        }}>
+          {imgPrev && (
+            <img src={imgPrev} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
           )}
-
-          {/* Vignette */}
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background:'linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,transparent 35%,transparent 65%,rgba(0,0,0,0.4) 100%)' }}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(8,11,42,0.45) 0%,transparent 35%,transparent 65%,rgba(8,11,42,0.5) 100%)"}}/>
 
           {/* Top bar */}
-          <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-4 pb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-white"
-                style={{ background: skin.bg, color: skin.fg }}>
-                {user?.initials}
+          <div style={{position:"absolute",top:0,left:0,right:0,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 16px",zIndex:10}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div style={{width:32,height:32,borderRadius:"50%",background:skin.bg,border:"2px solid rgba(240,240,245,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:skin.fg}}>
+                {user?.username?.slice(0,2).toUpperCase()}
               </div>
-              <span className="text-white text-sm font-semibold drop-shadow">{user?.name}</span>
+              <span style={{fontSize:13,fontWeight:600,color:"#F0F0F5",textShadow:"0 1px 4px rgba(8,11,42,0.5)"}}>{user?.username}</span>
             </div>
-            <button onClick={onClose}
-              className="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white transition-colors">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
+            <button onClick={onClose} style={{width:30,height:30,borderRadius:"50%",background:"rgba(8,11,42,0.4)",border:"none",cursor:"pointer",color:"rgba(240,240,245,0.8)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
+          {/* Text preview */}
+          {!imgPrev && (
+            <p style={{fontSize:fontSize,fontWeight:900,color:"#F0F0F5",textAlign:"center",padding:"0 28px",lineHeight:1.3,letterSpacing:"-0.02em",textShadow:"0 2px 20px rgba(8,11,42,0.5)",position:"relative",zIndex:2}}>
+              {text || <span style={{opacity:0.4,fontSize:18,fontWeight:500}}>Текст бичих…</span>}
+            </p>
+          )}
+
           {/* Photo button */}
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur flex items-center justify-center text-white border border-white/20 transition-colors"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
+          <button onClick={()=>fileRef.current?.click()} style={{
+            position:"absolute",bottom:12,right:12,
+            width:38,height:38,borderRadius:"50%",
+            background:"rgba(8,11,42,0.4)",backdropFilter:"blur(8px)",
+            border:"1px solid rgba(240,240,245,0.25)",
+            cursor:"pointer",color:"rgba(240,240,245,0.85)",
+            display:"flex",alignItems:"center",justifyContent:"center",
+            transition:"background .15s",
+          }}
+            onMouseEnter={e=>e.currentTarget.style.background="rgba(8,11,42,0.6)"}
+            onMouseLeave={e=>e.currentTarget.style.background="rgba(8,11,42,0.4)"}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
           </button>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImg}/>
+          <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={handleImg}/>
         </div>
 
         {/* Controls */}
-        <div className="bg-white dark:bg-dark-800 px-4 pt-4 pb-5 space-y-4">
+        <div style={{background:P.panel, padding:"16px", display:"flex", flexDirection:"column", gap:14}}>
 
           {/* Text input */}
-          {!imgPreview && (
+          {!imgPrev && (
             <textarea
-              className="w-full bg-gray-100 dark:bg-dark-700 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
               placeholder="Story текст бичих…"
-              rows={2}
-              value={text}
-              maxLength={120}
-              onChange={e => setText(e.target.value)}
+              rows={2} value={text} maxLength={120}
+              onChange={e=>setText(e.target.value)}
               autoFocus
+              style={{
+                width:"100%", padding:"10px 14px", borderRadius:12, boxSizing:"border-box",
+                border:`1px solid ${P.border}`, background:P.panel2, color:P.text,
+                fontSize:14, resize:"none", outline:"none", fontFamily:"inherit",
+                transition:"border-color .15s",
+              }}
+              onFocus={e=>{e.target.style.borderColor="#6B7399";}}
+              onBlur={e=>{e.target.style.borderColor=P.border;}}
             />
           )}
 
-          {/* Text size — only for text stories */}
-          {!imgPreview && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">Хэмжээ</span>
-              <div className="flex gap-1">
-                {TEXT_SIZES.map((s, i) => (
-                  <button key={s.label} onClick={() => setSizeIdx(i)}
-                    className={`w-8 h-8 rounded-lg text-xs font-bold transition-all
-                      ${sizeIdx === i ? 'bg-accent text-white' : 'bg-gray-100 dark:bg-dark-700 text-gray-500 hover:bg-gray-200 dark:hover:bg-dark-600'}`}>
-                    {s.label}
-                  </button>
+          {/* Font size + bg picker row */}
+          {!imgPrev && (
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              {/* Font size */}
+              <div style={{display:"flex",gap:4}}>
+                {[20,26,34].map((s,i)=>["S","M","L"].map((l,j)=> i===j && (
+                  <button key={s} onClick={()=>setFontSize(s)} style={{
+                    width:30,height:30,borderRadius:8,fontSize:11,fontWeight:700,
+                    border:"none",cursor:"pointer",transition:"all .15s",
+                    background: fontSize===s ? "linear-gradient(135deg,#1B3066,#2a4080)" : P.panel2,
+                    color: fontSize===s ? "#F0F0F5" : P.muted,
+                  }}>{l}</button>
+                )))}
+              </div>
+              <div style={{width:1,height:24,background:P.border}}/>
+              {/* BG picker */}
+              <div style={{display:"flex",gap:5,flex:1,overflowX:"auto",scrollbarWidth:"none"}}>
+                {GRADIENTS.map((g,i)=>(
+                  <button key={g.label} onClick={()=>setBgIdx(i)} style={{
+                    width:26,height:26,borderRadius:"50%",flexShrink:0,
+                    background:g.css,
+                    border:`2px solid ${i===bgIdx?"#F0F0F5":"transparent"}`,
+                    cursor:"pointer",transition:"transform .15s",
+                    transform:i===bgIdx?"scale(1.25)":"scale(1)",
+                  }}/>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Gradient picker */}
-          {!imgPreview && (
-            <div>
-              <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mb-2">Арын өнгө</p>
-              <div className="flex gap-2 flex-wrap">
-                {GRADIENTS.map(g => (
-                  <button key={g.value} onClick={() => setBg(g.value)}
-                    className={`w-9 h-9 rounded-full bg-gradient-to-br ${g.value} transition-all flex-shrink-0
-                      ${bg === g.value ? 'scale-125 ring-2 ring-offset-2 ring-gray-400 dark:ring-offset-dark-800' : 'hover:scale-110'}`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex gap-2.5 pt-1">
-            {imgPreview && (
-              <button onClick={() => setImgPreview(null)}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-gray-200 dark:border-white/15 text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+          {/* Actions */}
+          <div style={{display:"flex",gap:8}}>
+            {imgPrev && (
+              <button onClick={()=>setImgPrev(null)} style={{
+                display:"flex",alignItems:"center",gap:6,padding:"9px 14px",
+                borderRadius:10,border:`1px solid ${P.border}`,
+                background:"transparent",color:P.muted,fontSize:12,cursor:"pointer",
+                transition:"all .15s",
+              }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="#6B7399";e.currentTarget.style.color=P.text;}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=P.border;e.currentTarget.style.color=P.muted;}}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 Устгах
               </button>
             )}
             <button
               onClick={handlePost}
-              disabled={(!text.trim() && !imgPreview) || posting}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white text-sm font-bold disabled:opacity-40 hover:opacity-90 transition-opacity"
-            >
-              {posting ? (
-                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="12" cy="12" r="10" strokeOpacity=".3"/><path d="M12 2a10 10 0 0110 10"/>
-                </svg>
-              ) : (
-                <>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
-                  </svg>
-                  Story нийтлэх
-                </>
-              )}
+              disabled={(!text.trim() && !imgPrev) || posting}
+              style={{
+                flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+                padding:"10px",borderRadius:12,border:"none",
+                background:"linear-gradient(135deg,#1B3066,#2a4080,#6B7399)",
+                color:"#F0F0F5",fontSize:13,fontWeight:700,
+                cursor:(!text.trim()&&!imgPrev)||posting?"not-allowed":"pointer",
+                opacity:(!text.trim()&&!imgPrev)||posting?0.5:1,
+                transition:"all .15s",
+                boxShadow:"0 4px 16px rgba(27,48,102,0.4)",
+              }}
+              onMouseEnter={e=>{if(text.trim()||imgPrev){e.currentTarget.style.boxShadow="0 6px 24px rgba(107,115,153,0.4)";}}}
+              onMouseLeave={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(27,48,102,0.4)"}>
+              {posting
+                ? <svg style={{animation:"spinSlow 1.2s linear infinite"}} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" strokeOpacity=".3"/><path d="M12 2a10 10 0 0110 10"/></svg>
+                : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Story нийтлэх</>
+              }
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

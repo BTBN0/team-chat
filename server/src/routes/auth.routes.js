@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
-  register,
-  login,
+  googleLogin,
   me,
   updateProfile,
   updateAvatar,
@@ -12,8 +11,7 @@ import { upload } from "../middleware/upload.js";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/google", googleLogin);
 router.get("/me", protect, me);
 router.patch("/profile", protect, updateProfile);
 router.post("/avatar", protect, upload.single("avatar"), updateAvatar);

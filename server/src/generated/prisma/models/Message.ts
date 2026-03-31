@@ -225,6 +225,7 @@ export type MessageWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   channel?: Prisma.XOR<Prisma.ChannelScalarRelationFilter, Prisma.ChannelWhereInput>
   reactions?: Prisma.ReactionListRelationFilter
+  thread?: Prisma.XOR<Prisma.ThreadNullableScalarRelationFilter, Prisma.ThreadWhereInput> | null
 }
 
 export type MessageOrderByWithRelationInput = {
@@ -241,6 +242,7 @@ export type MessageOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   channel?: Prisma.ChannelOrderByWithRelationInput
   reactions?: Prisma.ReactionOrderByRelationAggregateInput
+  thread?: Prisma.ThreadOrderByWithRelationInput
   _relevance?: Prisma.MessageOrderByRelevanceInput
 }
 
@@ -261,6 +263,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   channel?: Prisma.XOR<Prisma.ChannelScalarRelationFilter, Prisma.ChannelWhereInput>
   reactions?: Prisma.ReactionListRelationFilter
+  thread?: Prisma.XOR<Prisma.ThreadNullableScalarRelationFilter, Prisma.ThreadWhereInput> | null
 }, "id">
 
 export type MessageOrderByWithAggregationInput = {
@@ -307,6 +310,7 @@ export type MessageCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutMessagesInput
   channel: Prisma.ChannelCreateNestedOneWithoutMessagesInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutMessageInput
+  thread?: Prisma.ThreadCreateNestedOneWithoutMessageInput
 }
 
 export type MessageUncheckedCreateInput = {
@@ -321,6 +325,7 @@ export type MessageUncheckedCreateInput = {
   userId: string
   channelId: string
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutMessageInput
+  thread?: Prisma.ThreadUncheckedCreateNestedOneWithoutMessageInput
 }
 
 export type MessageUpdateInput = {
@@ -335,6 +340,7 @@ export type MessageUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   channel?: Prisma.ChannelUpdateOneRequiredWithoutMessagesNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutMessageNestedInput
+  thread?: Prisma.ThreadUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageUncheckedUpdateInput = {
@@ -349,6 +355,7 @@ export type MessageUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutMessageNestedInput
+  thread?: Prisma.ThreadUncheckedUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageCreateManyInput = {
@@ -550,6 +557,20 @@ export type MessageUpdateOneRequiredWithoutReactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MessageUpdateToOneWithWhereWithoutReactionsInput, Prisma.MessageUpdateWithoutReactionsInput>, Prisma.MessageUncheckedUpdateWithoutReactionsInput>
 }
 
+export type MessageCreateNestedOneWithoutThreadInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutThreadInput, Prisma.MessageUncheckedCreateWithoutThreadInput>
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutThreadInput
+  connect?: Prisma.MessageWhereUniqueInput
+}
+
+export type MessageUpdateOneRequiredWithoutThreadNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutThreadInput, Prisma.MessageUncheckedCreateWithoutThreadInput>
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutThreadInput
+  upsert?: Prisma.MessageUpsertWithoutThreadInput
+  connect?: Prisma.MessageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MessageUpdateToOneWithWhereWithoutThreadInput, Prisma.MessageUpdateWithoutThreadInput>, Prisma.MessageUncheckedUpdateWithoutThreadInput>
+}
+
 export type MessageCreateWithoutUserInput = {
   id?: string
   content: string
@@ -561,6 +582,7 @@ export type MessageCreateWithoutUserInput = {
   updatedAt?: Date | string
   channel: Prisma.ChannelCreateNestedOneWithoutMessagesInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutMessageInput
+  thread?: Prisma.ThreadCreateNestedOneWithoutMessageInput
 }
 
 export type MessageUncheckedCreateWithoutUserInput = {
@@ -574,6 +596,7 @@ export type MessageUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   channelId: string
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutMessageInput
+  thread?: Prisma.ThreadUncheckedCreateNestedOneWithoutMessageInput
 }
 
 export type MessageCreateOrConnectWithoutUserInput = {
@@ -629,6 +652,7 @@ export type MessageCreateWithoutChannelInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMessagesInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutMessageInput
+  thread?: Prisma.ThreadCreateNestedOneWithoutMessageInput
 }
 
 export type MessageUncheckedCreateWithoutChannelInput = {
@@ -642,6 +666,7 @@ export type MessageUncheckedCreateWithoutChannelInput = {
   updatedAt?: Date | string
   userId: string
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutMessageInput
+  thread?: Prisma.ThreadUncheckedCreateNestedOneWithoutMessageInput
 }
 
 export type MessageCreateOrConnectWithoutChannelInput = {
@@ -681,6 +706,7 @@ export type MessageCreateWithoutReactionsInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMessagesInput
   channel: Prisma.ChannelCreateNestedOneWithoutMessagesInput
+  thread?: Prisma.ThreadCreateNestedOneWithoutMessageInput
 }
 
 export type MessageUncheckedCreateWithoutReactionsInput = {
@@ -694,6 +720,7 @@ export type MessageUncheckedCreateWithoutReactionsInput = {
   updatedAt?: Date | string
   userId: string
   channelId: string
+  thread?: Prisma.ThreadUncheckedCreateNestedOneWithoutMessageInput
 }
 
 export type MessageCreateOrConnectWithoutReactionsInput = {
@@ -723,6 +750,7 @@ export type MessageUpdateWithoutReactionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   channel?: Prisma.ChannelUpdateOneRequiredWithoutMessagesNestedInput
+  thread?: Prisma.ThreadUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutReactionsInput = {
@@ -736,6 +764,79 @@ export type MessageUncheckedUpdateWithoutReactionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
+  thread?: Prisma.ThreadUncheckedUpdateOneWithoutMessageNestedInput
+}
+
+export type MessageCreateWithoutThreadInput = {
+  id?: string
+  content: string
+  fileUrl?: string | null
+  fileType?: string | null
+  deleted?: boolean
+  pinned?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMessagesInput
+  channel: Prisma.ChannelCreateNestedOneWithoutMessagesInput
+  reactions?: Prisma.ReactionCreateNestedManyWithoutMessageInput
+}
+
+export type MessageUncheckedCreateWithoutThreadInput = {
+  id?: string
+  content: string
+  fileUrl?: string | null
+  fileType?: string | null
+  deleted?: boolean
+  pinned?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  channelId: string
+  reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutMessageInput
+}
+
+export type MessageCreateOrConnectWithoutThreadInput = {
+  where: Prisma.MessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.MessageCreateWithoutThreadInput, Prisma.MessageUncheckedCreateWithoutThreadInput>
+}
+
+export type MessageUpsertWithoutThreadInput = {
+  update: Prisma.XOR<Prisma.MessageUpdateWithoutThreadInput, Prisma.MessageUncheckedUpdateWithoutThreadInput>
+  create: Prisma.XOR<Prisma.MessageCreateWithoutThreadInput, Prisma.MessageUncheckedCreateWithoutThreadInput>
+  where?: Prisma.MessageWhereInput
+}
+
+export type MessageUpdateToOneWithWhereWithoutThreadInput = {
+  where?: Prisma.MessageWhereInput
+  data: Prisma.XOR<Prisma.MessageUpdateWithoutThreadInput, Prisma.MessageUncheckedUpdateWithoutThreadInput>
+}
+
+export type MessageUpdateWithoutThreadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
+  channel?: Prisma.ChannelUpdateOneRequiredWithoutMessagesNestedInput
+  reactions?: Prisma.ReactionUpdateManyWithoutMessageNestedInput
+}
+
+export type MessageUncheckedUpdateWithoutThreadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  channelId?: Prisma.StringFieldUpdateOperationsInput | string
+  reactions?: Prisma.ReactionUncheckedUpdateManyWithoutMessageNestedInput
 }
 
 export type MessageCreateManyUserInput = {
@@ -761,6 +862,7 @@ export type MessageUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel?: Prisma.ChannelUpdateOneRequiredWithoutMessagesNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutMessageNestedInput
+  thread?: Prisma.ThreadUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutUserInput = {
@@ -774,6 +876,7 @@ export type MessageUncheckedUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutMessageNestedInput
+  thread?: Prisma.ThreadUncheckedUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageUncheckedUpdateManyWithoutUserInput = {
@@ -811,6 +914,7 @@ export type MessageUpdateWithoutChannelInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutMessageNestedInput
+  thread?: Prisma.ThreadUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutChannelInput = {
@@ -824,6 +928,7 @@ export type MessageUncheckedUpdateWithoutChannelInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutMessageNestedInput
+  thread?: Prisma.ThreadUncheckedUpdateOneWithoutMessageNestedInput
 }
 
 export type MessageUncheckedUpdateManyWithoutChannelInput = {
@@ -883,6 +988,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   channel?: boolean | Prisma.ChannelDefaultArgs<ExtArgs>
   reactions?: boolean | Prisma.Message$reactionsArgs<ExtArgs>
+  thread?: boolean | Prisma.Message$threadArgs<ExtArgs>
   _count?: boolean | Prisma.MessageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
@@ -906,6 +1012,7 @@ export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   channel?: boolean | Prisma.ChannelDefaultArgs<ExtArgs>
   reactions?: boolean | Prisma.Message$reactionsArgs<ExtArgs>
+  thread?: boolean | Prisma.Message$threadArgs<ExtArgs>
   _count?: boolean | Prisma.MessageCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -915,6 +1022,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     user: Prisma.$UserPayload<ExtArgs>
     channel: Prisma.$ChannelPayload<ExtArgs>
     reactions: Prisma.$ReactionPayload<ExtArgs>[]
+    thread: Prisma.$ThreadPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1270,6 +1378,7 @@ export interface Prisma__MessageClient<T, Null = never, ExtArgs extends runtime.
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   channel<T extends Prisma.ChannelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChannelDefaultArgs<ExtArgs>>): Prisma.Prisma__ChannelClient<runtime.Types.Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reactions<T extends Prisma.Message$reactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$reactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  thread<T extends Prisma.Message$threadArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$threadArgs<ExtArgs>>): Prisma.Prisma__ThreadClient<runtime.Types.Result.GetResult<Prisma.$ThreadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1678,6 +1787,25 @@ export type Message$reactionsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ReactionScalarFieldEnum | Prisma.ReactionScalarFieldEnum[]
+}
+
+/**
+ * Message.thread
+ */
+export type Message$threadArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Thread
+   */
+  select?: Prisma.ThreadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Thread
+   */
+  omit?: Prisma.ThreadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ThreadInclude<ExtArgs> | null
+  where?: Prisma.ThreadWhereInput
 }
 
 /**

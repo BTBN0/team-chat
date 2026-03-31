@@ -1,23 +1,12 @@
-export function Avatar({ user, size = 32, showStatus = false, status = 'offline' }) {
-  const s = { width: size, height: size, fontSize: size * 0.36, borderRadius: size > 28 ? 10 : '50%' }
+const Avatar = ({ username, size = "md" }) => {
+  const sizes = { sm: "w-7 h-7 text-xs", md: "w-9 h-9 text-sm", lg: "w-11 h-11 text-base" };
+  const colors = ["bg-indigo-600", "bg-purple-600", "bg-pink-600", "bg-blue-600", "bg-teal-600", "bg-green-600"];
+  const color = colors[username?.charCodeAt(0) % colors.length] || "bg-indigo-600";
   return (
-    <div className="relative inline-flex flex-shrink-0">
-      {user?.avatar ? (
-        <img src={user.avatar} alt={user.username || user.name} style={s}
-          className="object-cover" />
-      ) : (
-        <div style={{ ...s, background: user?.bg || '#e8f1fb', color: user?.color || '#0071e3' }}
-          className="flex items-center justify-center font-bold select-none flex-shrink-0">
-          {user?.initials || user?.username?.slice(0,2).toUpperCase() || user?.name?.slice(0,2).toUpperCase() || '?'}
-        </div>
-      )}
-      {showStatus && (
-        <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2
-          border-white dark:border-dark-800
-          ${status === 'online'  ? 'bg-green-400' :
-            status === 'away'    ? 'bg-amber-400'  : 'bg-gray-400'}`}
-        />
-      )}
+    <div className={`${sizes[size]} ${color} rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0`}>
+      {username?.[0]?.toUpperCase() || "?"}
     </div>
-  )
-}
+  );
+};
+
+export default Avatar;

@@ -1,21 +1,45 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from "react";
 
-const Ctx = createContext(null)
+const ThemeContext = createContext(null);
 
-const init = () => {
-  const t = localStorage.getItem('cz-theme') || 'dark'
-  document.documentElement.classList.toggle('dark', t === 'dark')
-  return t
-}
+// localStorage-аас уншиж, html дээр .dark class нэмнэ (default: dark)
+const getInitialTheme = () => {
+  try {
+    const saved = localStorage.getItem("aura-theme");
+    return saved === "light" ? "light" : "dark";
+  } catch {
+    return "dark";
+  }
+};
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(init)
+const applyTheme = (t) => {
+  const html = document.documentElement;
+  if (t === "dark") {
+    html.classList.add("dark");
+  } else {
+    html.classList.remove("dark");
+  }
+};
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(() => {
+    const t = getInitialTheme();
+    applyTheme(t);
+    return t;
+  });
+
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem('cz-theme', theme)
-  }, [theme])
-  const toggle = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
-  return <Ctx.Provider value={{ theme, toggle }}>{children}</Ctx.Provider>
-}
+    applyTheme(theme);
+    try { localStorage.setItem("aura-theme", theme); } catch {}
+  }, [theme]);
 
-export const useTheme = () => useContext(Ctx)
+  const toggle = () => setTheme(t => t === "dark" ? "light" : "dark");
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggle }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+export const useTheme = () => useContext(ThemeContext);

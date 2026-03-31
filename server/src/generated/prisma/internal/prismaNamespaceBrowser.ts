@@ -60,7 +60,9 @@ export const ModelName = {
   DirectMessage: 'DirectMessage',
   FriendRequest: 'FriendRequest',
   Block: 'Block',
-  WorkspaceBan: 'WorkspaceBan'
+  WorkspaceBan: 'WorkspaceBan',
+  Thread: 'Thread',
+  Reply: 'Reply'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,11 +85,13 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   username: 'username',
-  password: 'password',
   avatar: 'avatar',
-  lastSeen: 'lastSeen',
+  provider: 'provider',
+  googleId: 'googleId',
+  facebookId: 'facebookId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  lastSeen: 'lastSeen'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -203,6 +207,29 @@ export const WorkspaceBanScalarFieldEnum = {
 export type WorkspaceBanScalarFieldEnum = (typeof WorkspaceBanScalarFieldEnum)[keyof typeof WorkspaceBanScalarFieldEnum]
 
 
+export const ThreadScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  messageId: 'messageId'
+} as const
+
+export type ThreadScalarFieldEnum = (typeof ThreadScalarFieldEnum)[keyof typeof ThreadScalarFieldEnum]
+
+
+export const ReplyScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  threadId: 'threadId',
+  userId: 'userId'
+} as const
+
+export type ReplyScalarFieldEnum = (typeof ReplyScalarFieldEnum)[keyof typeof ReplyScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -223,8 +250,10 @@ export const UserOrderByRelevanceFieldEnum = {
   id: 'id',
   email: 'email',
   username: 'username',
-  password: 'password',
-  avatar: 'avatar'
+  avatar: 'avatar',
+  provider: 'provider',
+  googleId: 'googleId',
+  facebookId: 'facebookId'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -322,4 +351,24 @@ export const WorkspaceBanOrderByRelevanceFieldEnum = {
 } as const
 
 export type WorkspaceBanOrderByRelevanceFieldEnum = (typeof WorkspaceBanOrderByRelevanceFieldEnum)[keyof typeof WorkspaceBanOrderByRelevanceFieldEnum]
+
+
+export const ThreadOrderByRelevanceFieldEnum = {
+  id: 'id',
+  messageId: 'messageId'
+} as const
+
+export type ThreadOrderByRelevanceFieldEnum = (typeof ThreadOrderByRelevanceFieldEnum)[keyof typeof ThreadOrderByRelevanceFieldEnum]
+
+
+export const ReplyOrderByRelevanceFieldEnum = {
+  id: 'id',
+  content: 'content',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  threadId: 'threadId',
+  userId: 'userId'
+} as const
+
+export type ReplyOrderByRelevanceFieldEnum = (typeof ReplyOrderByRelevanceFieldEnum)[keyof typeof ReplyOrderByRelevanceFieldEnum]
 

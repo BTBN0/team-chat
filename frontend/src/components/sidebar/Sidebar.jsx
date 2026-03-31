@@ -1,242 +1,350 @@
-import { useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
-import { useWorkspace } from '../../context/WorkspaceContext'
-import { useChat } from '../../context/ChatContext'
-import { useTheme } from '../../context/ThemeContext'
-import { useStory } from '../../context/StoryContext'
-import StoryRing from '../story/StoryRing'
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useSocket } from "../../context/SocketContext.jsx";
+import { Bell, Users, LogOut, Hash, MessageSquare, UserPlus, ChevronDown, ChevronRight, Plus, Settings, Sun, Moon } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext.jsx";
+import { useStory } from "../../context/StoryContext.jsx";
+import StoryRing from "../story/StoryRing.jsx";
+import WorkspaceList from "./WorkspaceList.jsx";
+import ChannelList from "./ChannelList.jsx";
+import NotificationBell from "../ui/NotificationBell.jsx";
+import api from "../../api/axios.js";
 
-const SKINS = [
-  { bg:'#FDDBB4',fg:'#8B5E3C' },{ bg:'#F5C99A',fg:'#7A4A2A' },{ bg:'#E8A87C',fg:'#6B3820' },
-  { bg:'#C68642',fg:'#3E1F00' },{ bg:'#8D5524',fg:'#FFD5A8' },{ bg:'#4A2912',fg:'#F5C99A' },
-  { bg:'#DBEAFE',fg:'#1D4ED8' },{ bg:'#EDE9FE',fg:'#7C3AED' },{ bg:'#FCE7F3',fg:'#BE185D' },
-  { bg:'#D1FAE5',fg:'#065F46' },
-]
-
-function WorkspacePicker({ workspaces, active, onSelect, onCreate, onJoin }) {
-  const [showNew, setShowNew] = useState(false)
-  const [tab, setTab]         = useState('create')
-  const [name, setName]       = useState('')
-  const [code, setCode]       = useState('')
-
-  const handleCreate = async (e) => {
-    e.preventDefault()
-    if (!name.trim()) return
-    await onCreate({ name })
-    setShowNew(false); setName('')
-  }
-  const handleJoin = async (e) => {
-    e.preventDefault()
-    if (!code.trim()) return
-    await onJoin(code.trim())
-    setShowNew(false); setCode('')
-  }
-
+const Avatar = ({ user, size = 28 }) => {
+  const gradients = [
+    "linear-gradient(135deg,#3b82f6,#6366f1)",
+    "linear-gradient(135deg,#8b5cf6,#ec4899)",
+    "linear-gradient(135deg,#06b6d4,#3b82f6)",
+    "linear-gradient(135deg,#10b981,#06b6d4)",
+    "linear-gradient(135deg,#f59e0b,#ef4444)",
+  ];
+  const gradient = gradients[user?.username?.charCodeAt(0) % gradients.length] || gradients[0];
+  if (user?.avatar) return <img src={user.avatar} alt={user.username} style={{ width: size, height: size, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />;
   return (
-    <div className="flex-shrink-0 border-b border-gray-100/50 dark:border-white/[0.04]">
-      <div className="flex items-center gap-1.5 overflow-x-auto px-3 py-2" style={{scrollbarWidth:'none'}}>
-        {workspaces.map(ws => (
-          <button key={ws.id} onClick={()=>onSelect(ws)} title={ws.name}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all
-              ${active?.id===ws.id ? 'bg-accent text-white scale-105' : 'bg-gray-100 dark:bg-dark-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-600'}`}>
-            {ws.avatar ? <img src={ws.avatar} className="w-full h-full object-cover rounded-xl"/> : ws.name.slice(0,2).toUpperCase()}
-          </button>
-        ))}
-        <button onClick={()=>setShowNew(v=>!v)}
-          className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 hover:text-accent hover:bg-accent/10 transition-all flex-shrink-0 border border-dashed border-gray-300 dark:border-white/5">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-      </div>
-
-      {showNew && (
-        <div className="mx-3 mb-2 p-3 bg-gray-50 dark:bg-dark-700 rounded-2xl border border-gray-200 dark:border-white/5 anim-slide-down">
-          <div className="flex gap-1 mb-3">
-            {['create','join'].map(t=>(
-              <button key={t} onClick={()=>setTab(t)}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all
-                  ${tab===t?'bg-white dark:bg-dark-600 text-gray-900 dark:text-gray-100 shadow-sm':'text-gray-400 hover:text-gray-600'}`}>
-                {t==='create'?'Үүсгэх':'Нэгдэх'}
-              </button>
-            ))}
-          </div>
-          {tab==='create' ? (
-            <form onSubmit={handleCreate} className="flex gap-2">
-              <input className="input-base py-2 text-xs flex-1" placeholder="Workspace нэр" value={name} onChange={e=>setName(e.target.value)}/>
-              <button type="submit" className="px-3 py-2 rounded-xl bg-accent text-white text-xs font-semibold">Үүсгэх</button>
-            </form>
-          ) : (
-            <form onSubmit={handleJoin} className="flex gap-2">
-              <input className="input-base py-2 text-xs flex-1" placeholder="Invite code" value={code} onChange={e=>setCode(e.target.value)}/>
-              <button type="submit" className="px-3 py-2 rounded-xl bg-accent text-white text-xs font-semibold">Нэгдэх</button>
-            </form>
-          )}
-        </div>
-      )}
+    <div style={{ width: size, height: size, borderRadius: "50%", background: gradient, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: size * 0.38, fontWeight: 600, flexShrink: 0 }}>
+      {user?.username?.[0]?.toUpperCase()}
     </div>
-  )
-}
+  );
+};
 
-export default function Sidebar({ onClose, onProfileOpen, onStoryOpen }) {
-  const { user, logout, profile } = useAuth()
-  const { workspaces, activeWorkspace, selectWorkspace, channels, activeChannel, selectChannel, createWorkspace, joinWorkspace, createChannel, members, onlineUsers } = useWorkspace()
-  const { setActiveDM } = useChat()
-  const { theme, toggle } = useTheme()
-  const { allStories } = useStory()
-  const [search, setSearch]     = useState('')
-  const [showNewCh, setShowNewCh] = useState(false)
-  const [newChName, setNewChName] = useState('')
+const WorkspaceAvatar = ({ workspace, size = 32 }) => {
+  const gradients = [
+    "linear-gradient(135deg,#3b82f6,#6366f1)",
+    "linear-gradient(135deg,#8b5cf6,#ec4899)",
+    "linear-gradient(135deg,#06b6d4,#3b82f6)",
+    "linear-gradient(135deg,#10b981,#06b6d4)",
+    "linear-gradient(135deg,#f59e0b,#ef4444)",
+  ];
+  const gradient = gradients[workspace?.name?.charCodeAt(0) % gradients.length] || gradients[0];
+  if (workspace?.avatar) return <img src={workspace.avatar} alt={workspace.name} style={{ width: size, height: size, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />;
+  return (
+    <div style={{ width: size, height: size, borderRadius: 10, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: size * 0.38, fontWeight: 700, flexShrink: 0 }}>
+      {workspace?.name?.[0]?.toUpperCase()}
+    </div>
+  );
+};
 
-  const skin = SKINS[profile?.skinIdx ?? 0] || SKINS[0]
+const Sidebar = ({ workspaces, channels, setChannels, currentWorkspace, onProfileOpen, onStoryOpen, onAddStory }) => {
+  const { user, logout } = useAuth();
+  const { theme, toggle } = useTheme();
+  const { onlineUsers } = useSocket();
+  const { allStories, myStories } = useStory();
+  const navigate = useNavigate();
+  const { workspaceId } = useParams();
 
-  const isOnline = (u) => {
-    if (onlineUsers?.has(u.id)) return true
-    // lastSeen 3 минутын дотор бол online гэж үз
-    if (u.lastSeen) {
-      return (Date.now() - new Date(u.lastSeen).getTime()) < 3 * 60 * 1000
+  const [tab, setTab] = useState("channels");
+  const [members, setMembers] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [showOnline, setShowOnline] = useState(true);
+  const [showOffline, setShowOffline] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef(null);
+
+  const isOwner = workspaces.find(w => w.id === workspaceId) && true;
+
+  useEffect(() => {
+    if (!workspaceId) return;
+    api.get(`/dm/users/${workspaceId}`).then((res) => setMembers(res.data.data || [])).catch(() => {});
+  }, [workspaceId]);
+
+  useEffect(() => {
+    api.get("/friends").then((res) => setFriends(res.data.data || [])).catch(() => {});
+    api.get("/friends/requests").then((res) => setPendingCount(res.data.data?.length || 0)).catch(() => {});
+    api.get("/dm/conversations").then((res) => setConversations(res.data.data || [])).catch(() => {});
+  }, []);
+
+  const handleWorkspaceAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !workspaceId) return;
+    setUploadingAvatar(true);
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      await api.patch(`/workspaces/${workspaceId}/avatar`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUploadingAvatar(false);
     }
-    return false
-  }
-  const initials = user?.username?.slice(0,2).toUpperCase() || user?.initials || 'YO'
+  };
 
-  const filtered = search ? channels.filter(c=>c.name.toLowerCase().includes(search.toLowerCase())) : channels
-  const dmMembers = members.filter(m => m.id !== user?.id)
+  const onlineFriends = friends.filter((f) => onlineUsers.includes(f.id));
+  const offlineFriends = friends.filter((f) => !onlineUsers.includes(f.id));
 
-  const handleCreateChannel = async (e) => {
-    e.preventDefault()
-    if (!newChName.trim()) return
-    await createChannel({ name: newChName.trim() })
-    setNewChName(''); setShowNewCh(false)
-  }
+  const allDMUsers = [
+    ...conversations,
+    ...members.filter((m) => !conversations.find((c) => c.partner?.id === m.id)).map((m) => ({ partner: m, lastMessage: null })),
+  ];
 
-  const handleDM = (member) => {
-    setActiveDM(member)
-    onClose?.()
-  }
+  const tabStyle = (active) => ({
+    flex: 1, paddingBottom: 8, fontSize: 12, fontWeight: 500, cursor: "pointer", border: "none", background: "transparent",
+    color: active ? "var(--text)" : "var(--text5)",
+    borderBottom: active ? "1px solid var(--text3)" : "1px solid transparent",
+    transition: "all 0.15s",
+  });
+
+  const memberRowStyle = { display: "flex", alignItems: "center", gap: 9, padding: "5px 8px", borderRadius: 7, cursor: "pointer", transition: "background 0.1s" };
 
   return (
-    <aside className="flex flex-col h-full w-64 bg-white dark:bg-dark-800 border-r border-gray-200 dark:border-white/5">
-
-      {/* Brand */}
-      <div className="flex items-center gap-2.5 px-4 h-14 border-b border-gray-100/50 dark:border-white/[0.04] flex-shrink-0">
-        <div className="w-7 h-7 rounded-xl flex-shrink-0 overflow-hidden"
-          style={{background:'linear-gradient(135deg,#a855f7,#6366f1,#3b82f6)'}}>
-          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="14" cy="14" r="6" fill="rgba(255,255,255,0.25)"/>
-            <circle cx="14" cy="14" r="3" fill="rgba(255,255,255,0.9)"/>
-            <circle cx="14" cy="7"  r="1.5" fill="rgba(255,255,255,0.6)"/>
-            <circle cx="14" cy="21" r="1.5" fill="rgba(255,255,255,0.6)"/>
-            <circle cx="7"  cy="14" r="1.5" fill="rgba(255,255,255,0.6)"/>
-            <circle cx="21" cy="14" r="1.5" fill="rgba(255,255,255,0.6)"/>
-          </svg>
+    <div style={{ display: "flex", height: "100%" }}>
+      {/* Workspace rail */}
+      <div style={{ width: 58, background: "var(--surface)", borderRight: "1px solid var(--border)", display: "flex", flexDirection: "column", alignItems: "center", padding: "10px 0", gap: 6 }}>
+        {/* AuraSync logo */}
+        <div
+          onClick={() => navigate("/dashboard")}
+          title="Dashboard"
+          style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg,#1B3066,#2a4080)", border: "1px solid var(--border2)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", marginBottom: 4, boxShadow: "0 2px 8px rgba(0,0,0,0.3)", flexShrink: 0 }}
+        >
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text)", letterSpacing: -0.5 }}>AS</span>
         </div>
-        <span className="flex-1 truncate font-black tracking-widest dark:text-white text-gray-900"
-          style={{
-            fontFamily:"'Syne',sans-serif",
-            fontSize:'15px',
-            letterSpacing:'0.18em',
-          }}>AURA</span>
-        <button onClick={toggle} className="btn-ghost px-2 py-1.5 text-xs">
-          {theme==='dark'
-            ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-          }
-        </button>
+        <div style={{ width: 24, height: 1, background: "var(--border)", margin: "2px 0" }} />
+        <WorkspaceList workspaces={workspaces} />
+
+        {/* Story rings in rail */}
+        <div style={{ width: 24, height: 1, background: "var(--border)", margin: "2px 0" }} />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, overflowY: "auto", scrollbarWidth: "none", maxHeight: 200 }}>
+          {/* My story / add */}
+          {(() => {
+            const SKINS = [{bg:"#FDDBB4",fg:"#8B5E3C"},{bg:"#F5C99A",fg:"#7A4A2A"},{bg:"#E8A87C",fg:"#6B3820"},{bg:"#C68642",fg:"#3E1F00"},{bg:"#8D5524",fg:"#FFD5A8"},{bg:"#4A2912",fg:"#F5C99A"},{bg:"#DBEAFE",fg:"#1D4ED8"},{bg:"#EDE9FE",fg:"#7C3AED"},{bg:"#FCE7F3",fg:"#BE185D"},{bg:"#D1FAE5",fg:"#065F46"}];
+            // We need profile from auth context - get it from the rendered scope
+            return null;
+          })()}
+          {allStories.slice(0, 5).map(group => (
+            <div key={group.userId} title={group.userName} style={{ position: "relative" }}>
+              <StoryRing
+                user={{ id: group.userId, initials: group.userInitials, bg: group.userBg, color: group.userColor }}
+                size={34}
+                hasStory={true}
+                seen={group.seen}
+                onClick={() => onStoryOpen?.({ userId: group.userId })}
+              />
+              {!group.seen && (
+                <span style={{
+                  position: "absolute", top: -2, right: -2,
+                  width: 8, height: 8, borderRadius: "50%",
+                  background: "linear-gradient(135deg,#1B3066,#6B7399)",
+                  border: "1.5px solid var(--surface)",
+                }} />
+              )}
+            </div>
+          ))}
+          {/* Add story button */}
+          <button onClick={() => onAddStory?.()} title="Story нэмэх" style={{
+            width: 34, height: 34, borderRadius: "50%",
+            background: "var(--surface2)",
+            border: "1.5px dashed var(--border2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", color: "var(--text5)", transition: "all .15s", flexShrink: 0,
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#6B7399"; e.currentTarget.style.color = "#6B7399"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border2)"; e.currentTarget.style.color = "var(--text5)"; }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      {/* Workspace picker */}
-      <WorkspacePicker workspaces={workspaces} active={activeWorkspace} onSelect={selectWorkspace} onCreate={createWorkspace} onJoin={joinWorkspace}/>
-
-      {/* Search */}
-      <div className="px-3 py-2.5 flex-shrink-0">
-        <div className="relative">
-          <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input className="w-full pl-8 pr-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-dark-700 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
-            placeholder="Search…" value={search} onChange={e=>setSearch(e.target.value)}/>
-        </div>
-      </div>
-
-      {/* Channels */}
-      <nav className="flex-1 overflow-y-auto px-0 pb-2">
-        <div className="px-1.5">
-          <div className="flex items-center justify-between px-3 py-1.5">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600">Channels</span>
-            <button onClick={()=>setShowNewCh(v=>!v)} className="text-gray-400 hover:text-accent transition-colors">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
+      {/* Main panel */}
+      <div style={{ width: 210, background: "var(--surface)", display: "flex", flexDirection: "column", borderRight: "1px solid var(--border)" }}>
+        {/* Workspace header */}
+        <div style={{ padding: "10px 12px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 9 }}>
+          <div style={{ position: "relative" }}>
+            <div
+              onClick={() => avatarInputRef.current?.click()}
+              title="Change workspace avatar"
+              style={{ cursor: "pointer", opacity: uploadingAvatar ? 0.5 : 1 }}
+            >
+              <WorkspaceAvatar workspace={currentWorkspace} size={30} />
+            </div>
+            <input ref={avatarInputRef} type="file" accept="image/*" onChange={handleWorkspaceAvatarUpload} style={{ display: "none" }} />
           </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {currentWorkspace?.name || "Workspace"}
+            </p>
+          </div>
+        </div>
 
-          {showNewCh && (
-            <form onSubmit={handleCreateChannel} className="flex gap-1.5 px-2 mb-2 anim-slide-down">
-              <input className="input-base py-1.5 text-xs flex-1" placeholder="channel-name" value={newChName} onChange={e=>setNewChName(e.target.value)} autoFocus/>
-              <button type="submit" className="px-2.5 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold">+</button>
-            </form>
+        {/* Tabs */}
+        <div style={{ display: "flex", padding: "8px 8px 0", gap: 2, borderBottom: "1px solid var(--border)" }}>
+          <button style={tabStyle(tab === "channels")} onClick={() => setTab("channels")}>
+            <Hash size={11} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />
+            Channels
+          </button>
+          <button style={tabStyle(tab === "dms")} onClick={() => setTab("dms")}>
+            <MessageSquare size={11} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />
+            DMs
+          </button>
+          <button style={{ ...tabStyle(tab === "friends"), position: "relative" }} onClick={() => setTab("friends")}>
+            <Users size={11} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />
+            Friends
+            {pendingCount > 0 && (
+              <span style={{ position: "absolute", top: 0, right: 2, width: 14, height: 14, background: "var(--red)", color: "#fff", borderRadius: "50%", fontSize: 8, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {pendingCount > 9 ? "9+" : pendingCount}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Tab content */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "6px" }}>
+
+          {/* Channels tab */}
+          {tab === "channels" && <ChannelList channels={channels} setChannels={setChannels} />}
+
+          {/* DMs tab */}
+          {tab === "dms" && (
+            <div>
+              {allDMUsers.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "32px 0", color: "var(--text5)", fontSize: 12 }}>
+                  <MessageSquare size={24} style={{ margin: "0 auto 8px", opacity: 0.3 }} />
+                  <p>No conversations yet</p>
+                </div>
+              ) : allDMUsers.map(({ partner, lastMessage }) => partner && (
+                <div
+                  key={partner.id}
+                  onClick={() => navigate(`/dm/${partner.id}`)}
+                  style={memberRowStyle}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "rgba(107,115,153,0.15)"}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                >
+                  <div style={{ position: "relative", flexShrink: 0 }}>
+                    <Avatar user={partner} size={26} />
+                    <span style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", border: "2px solid var(--surface)", background: onlineUsers.includes(partner.id) ? "var(--green)" : "var(--text5)" }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{partner.username}</p>
+                    {lastMessage && <p style={{ fontSize: 11, color: "var(--text5)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lastMessage.content || "Attachment"}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
 
-          {filtered.map(ch => (
-            <button key={ch.id} onClick={()=>{selectChannel(ch);onClose?.()}}
-              className={`sidebar-item w-full ${activeChannel?.id===ch.id?'sidebar-active':''}`}>
-              <span className="text-sm w-4 text-center opacity-60">#</span>
-              <span className="flex-1 truncate text-left">{ch.name}</span>
-            </button>
-          ))}
+          {/* Friends tab */}
+          {tab === "friends" && (
+            <div>
+              <button
+                onClick={() => navigate("/friends")}
+                style={{ width: "100%", marginBottom: 10, padding: "7px 8px", background: "var(--surface2)", border: "1px solid var(--border2)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", transition: "all 0.15s" }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#6B7399"; e.currentTarget.style.background = "rgba(107,115,153,0.12)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border2)"; e.currentTarget.style.background = "transparent"; }}
+              >
+                <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text3)", display: "flex", alignItems: "center", gap: 6 }}>
+                  <UserPlus size={13} /> Manage Friends
+                </span>
+                {pendingCount > 0 && (
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", background: "var(--red)", padding: "1px 6px", borderRadius: 20 }}>{pendingCount}</span>
+                )}
+              </button>
+
+              {friends.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "24px 0", color: "var(--text5)", fontSize: 12 }}>
+                  <Users size={24} style={{ margin: "0 auto 8px", opacity: 0.3 }} />
+                  <p>No friends yet</p>
+                </div>
+              ) : (
+                <>
+                  {onlineFriends.length > 0 && (
+                    <div style={{ marginBottom: 8 }}>
+                      <button onClick={() => setShowOnline(p => !p)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 8px", background: "none", border: "none", cursor: "pointer", width: "100%", marginBottom: 4 }}>
+                        {showOnline ? <ChevronDown size={11} color="var(--text5)" /> : <ChevronRight size={11} color="var(--text5)" />}
+                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--text5)", letterSpacing: "0.6px", textTransform: "uppercase" }}>Online — {onlineFriends.length}</span>
+                      </button>
+                      {showOnline && onlineFriends.map((friend) => (
+                        <div key={friend.id} onClick={() => navigate(`/dm/${friend.id}`)} style={memberRowStyle}
+                          onMouseEnter={(e) => e.currentTarget.style.background = "rgba(107,115,153,0.15)"}
+                          onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}>
+                          <div style={{ position: "relative", flexShrink: 0 }}>
+                            <Avatar user={friend} size={26} />
+                            <span style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", border: "2px solid var(--surface)", background: "var(--green)" }} />
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{friend.username}</p>
+                            <p style={{ fontSize: 10, color: "var(--green)" }}>Online</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {offlineFriends.length > 0 && (
+                    <div>
+                      <button onClick={() => setShowOffline(p => !p)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 8px", background: "none", border: "none", cursor: "pointer", width: "100%", marginBottom: 4 }}>
+                        {showOffline ? <ChevronDown size={11} color="var(--text5)" /> : <ChevronRight size={11} color="var(--text5)" />}
+                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--text5)", letterSpacing: "0.6px", textTransform: "uppercase" }}>Offline — {offlineFriends.length}</span>
+                      </button>
+                      {showOffline && offlineFriends.map((friend) => (
+                        <div key={friend.id} onClick={() => navigate(`/dm/${friend.id}`)} style={{ ...memberRowStyle, opacity: 0.5 }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(107,115,153,0.15)"; e.currentTarget.style.opacity = 1; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.opacity = 0.5; }}>
+                          <div style={{ position: "relative", flexShrink: 0 }}>
+                            <Avatar user={friend} size={26} />
+                            <span style={{ position: "absolute", bottom: -1, right: -1, width: 8, height: 8, borderRadius: "50%", border: "2px solid var(--surface)", background: "var(--text5)" }} />
+                          </div>
+                          <p style={{ fontSize: 13, fontWeight: 500, color: "var(--text3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{friend.username}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* DMs */}
-        {dmMembers.length > 0 && (
-          <div className="px-1.5 pt-3">
-            <div className="flex items-center px-3 py-1.5">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600">Direct Messages</span>
-            </div>
-            {dmMembers.slice(0, 8).map(m => {
-              const u = m.user || m
-              const storyGroup = allStories.find(s => s.userId === u.id)
-              return (
-                <button key={u.id} onClick={()=>handleDM(u)} className="sidebar-item w-full">
-                  <div className="relative flex-shrink-0">
-                    <StoryRing user={{ initials: u.username?.slice(0,2).toUpperCase(), id: u.id, bg:'#e8f1fb', color:'#0071e3' }}
-                      size={20} hasStory={!!storyGroup} seen={storyGroup?.seen ?? true}
-                      onClick={(e)=>{ if(storyGroup){e.stopPropagation();onStoryOpen?.({userId:u.id})} }}/>
-                    <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-dark-800 ${isOnline(u) ? 'bg-green-400' : 'bg-gray-300 dark:bg-gray-600'}`}/>
-                  </div>
-                  <span className="flex-1 truncate text-left text-sm">{u.username}</span>
-                  {isOnline(u) && <span className="text-[9px] text-green-500 font-medium flex-shrink-0">●</span>}
-                </button>
-              )
-            })}
+        {/* User footer */}
+        <div style={{ padding: "8px 10px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ position: "relative", cursor: "pointer", flexShrink: 0 }} onClick={() => (onProfileOpen ? onProfileOpen() : navigate("/profile"))}>
+            <Avatar user={user} size={28} />
+            <span style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", border: "2px solid var(--surface)", background: "var(--green)" }} />
           </div>
-        )}
-      </nav>
-
-      {/* User bar */}
-      <div className="flex items-center gap-2 px-3 py-2.5 border-t border-gray-100/50 dark:border-white/[0.04] flex-shrink-0">
-        <button onClick={onProfileOpen} className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-80 transition-opacity">
-          <div className="relative flex-shrink-0">
-            <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center overflow-hidden text-xs font-bold select-none"
-              style={{ background: skin.bg, color: skin.fg, border: `2px solid ${skin.fg}55` }}>
-              {initials}
-            </div>
-            {(() => {
-              const st = profile?.status || 'online'
-              const dotColors = { online:'bg-green-400', away:'bg-amber-400', busy:'bg-red-400', offline:'bg-gray-400' }
-              return <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-[#1c1c1e] ${dotColors[st]}`}/>
-            })()}
+          <span onClick={() => (onProfileOpen ? onProfileOpen() : navigate("/profile"))} style={{ fontSize: 12, fontWeight: 500, color: "var(--text2)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer" }}>
+            {user?.username}
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <button onClick={toggle} title={theme === "dark" ? "Light mode" : "Dark mode"}
+              style={{ width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--text5)", borderRadius: 6, transition: "all 0.15s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "#F0F0F5"; e.currentTarget.style.background = "rgba(107,115,153,0.15)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "var(--text5)"; e.currentTarget.style.background = "none"; }}>
+              {theme === "dark" ? <Sun size={13} /> : <Moon size={13} />}
+            </button>
+            <NotificationBell />
+            <button onClick={logout} title="Sign out"
+              style={{ width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "var(--text5)", borderRadius: 6, transition: "all 0.15s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "var(--text)"; e.currentTarget.style.background = "rgba(107,115,153,0.15)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "var(--text5)"; e.currentTarget.style.background = "none"; }}>
+              <LogOut size={13} />
+            </button>
           </div>
-          <div className="flex-1 min-w-0 text-left">
-            <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{user?.username}</p>
-            {(() => {
-              const st = profile?.status || 'online'
-              const colors = { online:'text-green-500', away:'text-amber-500', busy:'text-red-500', offline:'text-gray-400' }
-              const labels = { online:'Online', away:'Away', busy:'Busy', offline:'Offline' }
-              return <p className={`text-[10px] font-medium ${colors[st]}`}>● {labels[st]}</p>
-            })()}
-          </div>
-        </button>
-        <button onClick={logout} title="Гарах" className="text-gray-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-        </button>
+        </div>
       </div>
-    </aside>
-  )
-}
+    </div>
+  );
+};
+
+export default Sidebar;

@@ -28,33 +28,39 @@ export type UserMinAggregateOutputType = {
   id: string | null
   email: string | null
   username: string | null
-  password: string | null
   avatar: string | null
-  lastSeen: Date | null
+  provider: string | null
+  googleId: string | null
+  facebookId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  lastSeen: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
   id: string | null
   email: string | null
   username: string | null
-  password: string | null
   avatar: string | null
-  lastSeen: Date | null
+  provider: string | null
+  googleId: string | null
+  facebookId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  lastSeen: Date | null
 }
 
 export type UserCountAggregateOutputType = {
   id: number
   email: number
   username: number
-  password: number
   avatar: number
-  lastSeen: number
+  provider: number
+  googleId: number
+  facebookId: number
   createdAt: number
   updatedAt: number
+  lastSeen: number
   _all: number
 }
 
@@ -63,33 +69,39 @@ export type UserMinAggregateInputType = {
   id?: true
   email?: true
   username?: true
-  password?: true
   avatar?: true
-  lastSeen?: true
+  provider?: true
+  googleId?: true
+  facebookId?: true
   createdAt?: true
   updatedAt?: true
+  lastSeen?: true
 }
 
 export type UserMaxAggregateInputType = {
   id?: true
   email?: true
   username?: true
-  password?: true
   avatar?: true
-  lastSeen?: true
+  provider?: true
+  googleId?: true
+  facebookId?: true
   createdAt?: true
   updatedAt?: true
+  lastSeen?: true
 }
 
 export type UserCountAggregateInputType = {
   id?: true
   email?: true
   username?: true
-  password?: true
   avatar?: true
-  lastSeen?: true
+  provider?: true
+  googleId?: true
+  facebookId?: true
   createdAt?: true
   updatedAt?: true
+  lastSeen?: true
   _all?: true
 }
 
@@ -169,11 +181,13 @@ export type UserGroupByOutputType = {
   id: string
   email: string
   username: string
-  password: string
   avatar: string | null
-  lastSeen: Date
+  provider: string
+  googleId: string | null
+  facebookId: string | null
   createdAt: Date
   updatedAt: Date
+  lastSeen: Date
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -201,11 +215,13 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   username?: Prisma.StringFilter<"User"> | string
-  password?: Prisma.StringFilter<"User"> | string
   avatar?: Prisma.StringNullableFilter<"User"> | string | null
-  lastSeen?: Prisma.DateTimeFilter<"User"> | Date | string
+  provider?: Prisma.StringFilter<"User"> | string
+  googleId?: Prisma.StringNullableFilter<"User"> | string | null
+  facebookId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastSeen?: Prisma.DateTimeFilter<"User"> | Date | string
   workspaces?: Prisma.WorkspaceMemberListRelationFilter
   messages?: Prisma.MessageListRelationFilter
   reactions?: Prisma.ReactionListRelationFilter
@@ -216,17 +232,20 @@ export type UserWhereInput = {
   blockedBy?: Prisma.BlockListRelationFilter
   blocking?: Prisma.BlockListRelationFilter
   workspaceBans?: Prisma.WorkspaceBanListRelationFilter
+  replies?: Prisma.ReplyListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  password?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastSeen?: Prisma.SortOrder
+  provider?: Prisma.SortOrder
+  googleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  facebookId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
   workspaces?: Prisma.WorkspaceMemberOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
   reactions?: Prisma.ReactionOrderByRelationAggregateInput
@@ -237,21 +256,24 @@ export type UserOrderByWithRelationInput = {
   blockedBy?: Prisma.BlockOrderByRelationAggregateInput
   blocking?: Prisma.BlockOrderByRelationAggregateInput
   workspaceBans?: Prisma.WorkspaceBanOrderByRelationAggregateInput
+  replies?: Prisma.ReplyOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
-  username?: string
+  googleId?: string
+  facebookId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  password?: Prisma.StringFilter<"User"> | string
+  username?: Prisma.StringFilter<"User"> | string
   avatar?: Prisma.StringNullableFilter<"User"> | string | null
-  lastSeen?: Prisma.DateTimeFilter<"User"> | Date | string
+  provider?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  lastSeen?: Prisma.DateTimeFilter<"User"> | Date | string
   workspaces?: Prisma.WorkspaceMemberListRelationFilter
   messages?: Prisma.MessageListRelationFilter
   reactions?: Prisma.ReactionListRelationFilter
@@ -262,17 +284,20 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   blockedBy?: Prisma.BlockListRelationFilter
   blocking?: Prisma.BlockListRelationFilter
   workspaceBans?: Prisma.WorkspaceBanListRelationFilter
-}, "id" | "email" | "username">
+  replies?: Prisma.ReplyListRelationFilter
+}, "id" | "email" | "googleId" | "facebookId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  password?: Prisma.SortOrder
   avatar?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastSeen?: Prisma.SortOrder
+  provider?: Prisma.SortOrder
+  googleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  facebookId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -285,22 +310,26 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
-  password?: Prisma.StringWithAggregatesFilter<"User"> | string
   avatar?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  lastSeen?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  provider?: Prisma.StringWithAggregatesFilter<"User"> | string
+  googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  facebookId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  lastSeen?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
 export type UserCreateInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -311,17 +340,20 @@ export type UserCreateInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -332,17 +364,20 @@ export type UserUncheckedCreateInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -353,17 +388,20 @@ export type UserUpdateInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -374,39 +412,46 @@ export type UserUncheckedUpdateInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
 }
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserOrderByRelevanceInput = {
@@ -419,33 +464,39 @@ export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  password?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
-  lastSeen?: Prisma.SortOrder
+  provider?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
+  facebookId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  password?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
-  lastSeen?: Prisma.SortOrder
+  provider?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
+  facebookId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  password?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
-  lastSeen?: Prisma.SortOrder
+  provider?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
+  facebookId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  lastSeen?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -605,15 +656,31 @@ export type UserUpdateOneRequiredWithoutWorkspaceBansNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkspaceBansInput, Prisma.UserUpdateWithoutWorkspaceBansInput>, Prisma.UserUncheckedUpdateWithoutWorkspaceBansInput>
 }
 
+export type UserCreateNestedOneWithoutRepliesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRepliesInput, Prisma.UserUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRepliesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRepliesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRepliesInput, Prisma.UserUncheckedCreateWithoutRepliesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRepliesInput
+  upsert?: Prisma.UserUpsertWithoutRepliesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRepliesInput, Prisma.UserUpdateWithoutRepliesInput>, Prisma.UserUncheckedUpdateWithoutRepliesInput>
+}
+
 export type UserCreateWithoutWorkspacesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.DirectMessageCreateNestedManyWithoutSenderInput
@@ -623,17 +690,20 @@ export type UserCreateWithoutWorkspacesInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspacesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutSenderInput
@@ -643,6 +713,7 @@ export type UserUncheckedCreateWithoutWorkspacesInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspacesInput = {
@@ -665,11 +736,13 @@ export type UserUpdateWithoutWorkspacesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.DirectMessageUpdateManyWithoutSenderNestedInput
@@ -679,17 +752,20 @@ export type UserUpdateWithoutWorkspacesInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspacesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -699,17 +775,20 @@ export type UserUncheckedUpdateWithoutWorkspacesInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.DirectMessageCreateNestedManyWithoutSenderInput
@@ -719,17 +798,20 @@ export type UserCreateWithoutMessagesInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutSenderInput
@@ -739,6 +821,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -761,11 +844,13 @@ export type UserUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.DirectMessageUpdateManyWithoutSenderNestedInput
@@ -775,17 +860,20 @@ export type UserUpdateWithoutMessagesInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -795,17 +883,20 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReactionsInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.DirectMessageCreateNestedManyWithoutSenderInput
@@ -815,17 +906,20 @@ export type UserCreateWithoutReactionsInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReactionsInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   sentMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutSenderInput
@@ -835,6 +929,7 @@ export type UserUncheckedCreateWithoutReactionsInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReactionsInput = {
@@ -857,11 +952,13 @@ export type UserUpdateWithoutReactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.DirectMessageUpdateManyWithoutSenderNestedInput
@@ -871,17 +968,20 @@ export type UserUpdateWithoutReactionsInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   sentMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -891,17 +991,20 @@ export type UserUncheckedUpdateWithoutReactionsInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSentMessagesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -911,17 +1014,20 @@ export type UserCreateWithoutSentMessagesInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSentMessagesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -931,6 +1037,7 @@ export type UserUncheckedCreateWithoutSentMessagesInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSentMessagesInput = {
@@ -942,11 +1049,13 @@ export type UserCreateWithoutReceivedMessagesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -956,17 +1065,20 @@ export type UserCreateWithoutReceivedMessagesInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReceivedMessagesInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -976,6 +1088,7 @@ export type UserUncheckedCreateWithoutReceivedMessagesInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReceivedMessagesInput = {
@@ -998,11 +1111,13 @@ export type UserUpdateWithoutSentMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1012,17 +1127,20 @@ export type UserUpdateWithoutSentMessagesInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1032,6 +1150,7 @@ export type UserUncheckedUpdateWithoutSentMessagesInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReceivedMessagesInput = {
@@ -1049,11 +1168,13 @@ export type UserUpdateWithoutReceivedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1063,17 +1184,20 @@ export type UserUpdateWithoutReceivedMessagesInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1083,17 +1207,20 @@ export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSentRequestsInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -1103,17 +1230,20 @@ export type UserCreateWithoutSentRequestsInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSentRequestsInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -1123,6 +1253,7 @@ export type UserUncheckedCreateWithoutSentRequestsInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSentRequestsInput = {
@@ -1134,11 +1265,13 @@ export type UserCreateWithoutReceivedRequestsInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -1148,17 +1281,20 @@ export type UserCreateWithoutReceivedRequestsInput = {
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReceivedRequestsInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -1168,6 +1304,7 @@ export type UserUncheckedCreateWithoutReceivedRequestsInput = {
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReceivedRequestsInput = {
@@ -1190,11 +1327,13 @@ export type UserUpdateWithoutSentRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1204,17 +1343,20 @@ export type UserUpdateWithoutSentRequestsInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1224,6 +1366,7 @@ export type UserUncheckedUpdateWithoutSentRequestsInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReceivedRequestsInput = {
@@ -1241,11 +1384,13 @@ export type UserUpdateWithoutReceivedRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1255,17 +1400,20 @@ export type UserUpdateWithoutReceivedRequestsInput = {
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReceivedRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1275,17 +1423,20 @@ export type UserUncheckedUpdateWithoutReceivedRequestsInput = {
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBlockedByInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -1295,17 +1446,20 @@ export type UserCreateWithoutBlockedByInput = {
   receivedRequests?: Prisma.FriendRequestCreateNestedManyWithoutReceiverInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBlockedByInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -1315,6 +1469,7 @@ export type UserUncheckedCreateWithoutBlockedByInput = {
   receivedRequests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutReceiverInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBlockedByInput = {
@@ -1326,11 +1481,13 @@ export type UserCreateWithoutBlockingInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -1340,17 +1497,20 @@ export type UserCreateWithoutBlockingInput = {
   receivedRequests?: Prisma.FriendRequestCreateNestedManyWithoutReceiverInput
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBlockingInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -1360,6 +1520,7 @@ export type UserUncheckedCreateWithoutBlockingInput = {
   receivedRequests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutReceiverInput
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBlockingInput = {
@@ -1382,11 +1543,13 @@ export type UserUpdateWithoutBlockedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1396,17 +1559,20 @@ export type UserUpdateWithoutBlockedByInput = {
   receivedRequests?: Prisma.FriendRequestUpdateManyWithoutReceiverNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBlockedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1416,6 +1582,7 @@ export type UserUncheckedUpdateWithoutBlockedByInput = {
   receivedRequests?: Prisma.FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutBlockingInput = {
@@ -1433,11 +1600,13 @@ export type UserUpdateWithoutBlockingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1447,17 +1616,20 @@ export type UserUpdateWithoutBlockingInput = {
   receivedRequests?: Prisma.FriendRequestUpdateManyWithoutReceiverNestedInput
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBlockingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1467,17 +1639,20 @@ export type UserUncheckedUpdateWithoutBlockingInput = {
   receivedRequests?: Prisma.FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkspaceBansInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
@@ -1487,17 +1662,20 @@ export type UserCreateWithoutWorkspaceBansInput = {
   receivedRequests?: Prisma.FriendRequestCreateNestedManyWithoutReceiverInput
   blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
+  replies?: Prisma.ReplyCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceBansInput = {
   id?: string
   email: string
   username: string
-  password: string
   avatar?: string | null
-  lastSeen?: Date | string
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  lastSeen?: Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
@@ -1507,6 +1685,7 @@ export type UserUncheckedCreateWithoutWorkspaceBansInput = {
   receivedRequests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutReceiverInput
   blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
   blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
+  replies?: Prisma.ReplyUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceBansInput = {
@@ -1529,11 +1708,13 @@ export type UserUpdateWithoutWorkspaceBansInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
@@ -1543,17 +1724,20 @@ export type UserUpdateWithoutWorkspaceBansInput = {
   receivedRequests?: Prisma.FriendRequestUpdateManyWithoutReceiverNestedInput
   blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
+  replies?: Prisma.ReplyUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceBansInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1563,6 +1747,115 @@ export type UserUncheckedUpdateWithoutWorkspaceBansInput = {
   receivedRequests?: Prisma.FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput
   blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
   blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  replies?: Prisma.ReplyUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRepliesInput = {
+  id?: string
+  email: string
+  username: string
+  avatar?: string | null
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastSeen?: Date | string
+  workspaces?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+  reactions?: Prisma.ReactionCreateNestedManyWithoutUserInput
+  sentMessages?: Prisma.DirectMessageCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.DirectMessageCreateNestedManyWithoutReceiverInput
+  sentRequests?: Prisma.FriendRequestCreateNestedManyWithoutSenderInput
+  receivedRequests?: Prisma.FriendRequestCreateNestedManyWithoutReceiverInput
+  blockedBy?: Prisma.BlockCreateNestedManyWithoutBlockerInput
+  blocking?: Prisma.BlockCreateNestedManyWithoutBlockedInput
+  workspaceBans?: Prisma.WorkspaceBanCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRepliesInput = {
+  id?: string
+  email: string
+  username: string
+  avatar?: string | null
+  provider: string
+  googleId?: string | null
+  facebookId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastSeen?: Date | string
+  workspaces?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+  reactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutUserInput
+  sentMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.DirectMessageUncheckedCreateNestedManyWithoutReceiverInput
+  sentRequests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutSenderInput
+  receivedRequests?: Prisma.FriendRequestUncheckedCreateNestedManyWithoutReceiverInput
+  blockedBy?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockerInput
+  blocking?: Prisma.BlockUncheckedCreateNestedManyWithoutBlockedInput
+  workspaceBans?: Prisma.WorkspaceBanUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRepliesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRepliesInput, Prisma.UserUncheckedCreateWithoutRepliesInput>
+}
+
+export type UserUpsertWithoutRepliesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRepliesInput, Prisma.UserUncheckedUpdateWithoutRepliesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRepliesInput, Prisma.UserUncheckedCreateWithoutRepliesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRepliesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRepliesInput, Prisma.UserUncheckedUpdateWithoutRepliesInput>
+}
+
+export type UserUpdateWithoutRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspaces?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+  reactions?: Prisma.ReactionUpdateManyWithoutUserNestedInput
+  sentMessages?: Prisma.DirectMessageUpdateManyWithoutSenderNestedInput
+  receivedMessages?: Prisma.DirectMessageUpdateManyWithoutReceiverNestedInput
+  sentRequests?: Prisma.FriendRequestUpdateManyWithoutSenderNestedInput
+  receivedRequests?: Prisma.FriendRequestUpdateManyWithoutReceiverNestedInput
+  blockedBy?: Prisma.BlockUpdateManyWithoutBlockerNestedInput
+  blocking?: Prisma.BlockUpdateManyWithoutBlockedNestedInput
+  workspaceBans?: Prisma.WorkspaceBanUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  facebookId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeen?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspaces?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+  reactions?: Prisma.ReactionUncheckedUpdateManyWithoutUserNestedInput
+  sentMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutSenderNestedInput
+  receivedMessages?: Prisma.DirectMessageUncheckedUpdateManyWithoutReceiverNestedInput
+  sentRequests?: Prisma.FriendRequestUncheckedUpdateManyWithoutSenderNestedInput
+  receivedRequests?: Prisma.FriendRequestUncheckedUpdateManyWithoutReceiverNestedInput
+  blockedBy?: Prisma.BlockUncheckedUpdateManyWithoutBlockerNestedInput
+  blocking?: Prisma.BlockUncheckedUpdateManyWithoutBlockedNestedInput
+  workspaceBans?: Prisma.WorkspaceBanUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1581,6 +1874,7 @@ export type UserCountOutputType = {
   blockedBy: number
   blocking: number
   workspaceBans: number
+  replies: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1594,6 +1888,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   blockedBy?: boolean | UserCountOutputTypeCountBlockedByArgs
   blocking?: boolean | UserCountOutputTypeCountBlockingArgs
   workspaceBans?: boolean | UserCountOutputTypeCountWorkspaceBansArgs
+  replies?: boolean | UserCountOutputTypeCountRepliesArgs
 }
 
 /**
@@ -1676,16 +1971,25 @@ export type UserCountOutputTypeCountWorkspaceBansArgs<ExtArgs extends runtime.Ty
   where?: Prisma.WorkspaceBanWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReplyWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   email?: boolean
   username?: boolean
-  password?: boolean
   avatar?: boolean
-  lastSeen?: boolean
+  provider?: boolean
+  googleId?: boolean
+  facebookId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lastSeen?: boolean
   workspaces?: boolean | Prisma.User$workspacesArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   reactions?: boolean | Prisma.User$reactionsArgs<ExtArgs>
@@ -1696,6 +2000,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   blockedBy?: boolean | Prisma.User$blockedByArgs<ExtArgs>
   blocking?: boolean | Prisma.User$blockingArgs<ExtArgs>
   workspaceBans?: boolean | Prisma.User$workspaceBansArgs<ExtArgs>
+  replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1705,14 +2010,16 @@ export type UserSelectScalar = {
   id?: boolean
   email?: boolean
   username?: boolean
-  password?: boolean
   avatar?: boolean
-  lastSeen?: boolean
+  provider?: boolean
+  googleId?: boolean
+  facebookId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lastSeen?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "password" | "avatar" | "lastSeen" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "avatar" | "provider" | "googleId" | "facebookId" | "createdAt" | "updatedAt" | "lastSeen", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaces?: boolean | Prisma.User$workspacesArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
@@ -1724,6 +2031,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   blockedBy?: boolean | Prisma.User$blockedByArgs<ExtArgs>
   blocking?: boolean | Prisma.User$blockingArgs<ExtArgs>
   workspaceBans?: boolean | Prisma.User$workspaceBansArgs<ExtArgs>
+  replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1740,16 +2048,19 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     blockedBy: Prisma.$BlockPayload<ExtArgs>[]
     blocking: Prisma.$BlockPayload<ExtArgs>[]
     workspaceBans: Prisma.$WorkspaceBanPayload<ExtArgs>[]
+    replies: Prisma.$ReplyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
     username: string
-    password: string
     avatar: string | null
-    lastSeen: Date
+    provider: string
+    googleId: string | null
+    facebookId: string | null
     createdAt: Date
     updatedAt: Date
+    lastSeen: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2100,6 +2411,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   blockedBy<T extends Prisma.User$blockedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blockedByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   blocking<T extends Prisma.User$blockingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blockingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workspaceBans<T extends Prisma.User$workspaceBansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceBansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceBanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  replies<T extends Prisma.User$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2132,11 +2444,13 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly username: Prisma.FieldRef<"User", 'String'>
-  readonly password: Prisma.FieldRef<"User", 'String'>
   readonly avatar: Prisma.FieldRef<"User", 'String'>
-  readonly lastSeen: Prisma.FieldRef<"User", 'DateTime'>
+  readonly provider: Prisma.FieldRef<"User", 'String'>
+  readonly googleId: Prisma.FieldRef<"User", 'String'>
+  readonly facebookId: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastSeen: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 
@@ -2722,6 +3036,30 @@ export type User$workspaceBansArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.WorkspaceBanScalarFieldEnum | Prisma.WorkspaceBanScalarFieldEnum[]
+}
+
+/**
+ * User.replies
+ */
+export type User$repliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reply
+   */
+  select?: Prisma.ReplySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reply
+   */
+  omit?: Prisma.ReplyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReplyInclude<ExtArgs> | null
+  where?: Prisma.ReplyWhereInput
+  orderBy?: Prisma.ReplyOrderByWithRelationInput | Prisma.ReplyOrderByWithRelationInput[]
+  cursor?: Prisma.ReplyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReplyScalarFieldEnum | Prisma.ReplyScalarFieldEnum[]
 }
 
 /**

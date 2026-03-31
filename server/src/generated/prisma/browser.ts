@@ -67,3 +67,13 @@ export type Block = Prisma.BlockModel
  * 
  */
 export type WorkspaceBan = Prisma.WorkspaceBanModel
+/**
+ * Model Thread
+ * 
+ */
+export type Thread = Prisma.ThreadModel
+/**
+ * Model Reply
+ * 
+ */
+export type Reply = Prisma.ReplyModel

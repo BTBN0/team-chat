@@ -10,13 +10,19 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  username  String   @unique
-  password  String
+  username  String
   avatar    String?
-  lastSeen  DateTime @default(now())
+
+  provider   String
+  googleId   String? @unique
+  facebookId String? @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  lastSeen  DateTime @default(now())
+  
 
+  // 🔥 RELATIONS (ЭНЭ ДУТУУ БАЙСАН)
   workspaces       WorkspaceMember[]
   messages         Message[]
   reactions        Reaction[]
@@ -24,9 +30,11 @@ model User {
   receivedMessages DirectMessage[] @relation("ReceivedMessages")
   sentRequests     FriendRequest[] @relation("SentRequests")
   receivedRequests FriendRequest[] @relation("ReceivedRequests")
-  blockedBy    Block[]        @relation("BlockedBy")
-blocking     Block[]        @relation("Blocking")
-workspaceBans WorkspaceBan[]
+  blockedBy        Block[] @relation("BlockedBy")
+  blocking         Block[] @relation("Blocking")
+  workspaceBans    WorkspaceBan[]
+  replies   Reply[]
+  
 }
 
 model Workspace {
@@ -38,9 +46,9 @@ model Workspace {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  members WorkspaceMember[]
+  members  WorkspaceMember[]
   channels Channel[]
-  bans    WorkspaceBan[]
+  bans     WorkspaceBan[]
 }
 
 model WorkspaceMember {
@@ -84,9 +92,10 @@ model Message {
   userId    String
   channelId String
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  channel   Channel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   reactions Reaction[]
+  thread    Thread?
 }
 
 model Reaction {
@@ -102,6 +111,7 @@ model Reaction {
 
   @@unique([userId, messageId, emoji])
 }
+
 model DirectMessage {
   id        String   @id @default(uuid())
   content   String   @db.Text
@@ -117,6 +127,7 @@ model DirectMessage {
   sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
 }
+
 model FriendRequest {
   id        String   @id @default(uuid())
   status    String   @default("PENDING")
@@ -130,12 +141,13 @@ model FriendRequest {
 
   @@unique([senderId, receiverId])
 }
+
 model Block {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
 
-  blockerId  String
-  blockedId  String
+  blockerId String
+  blockedId String
 
   blocker User @relation("BlockedBy", fields: [blockerId], references: [id], onDelete: Cascade)
   blocked User @relation("Blocking", fields: [blockedId], references: [id], onDelete: Cascade)
@@ -155,4 +167,27 @@ model WorkspaceBan {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])
+}
+model Thread {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  messageId String  @unique
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  replies   Reply[]
+}
+
+model Reply {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  fileUrl   String?
+  fileType  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  threadId String
+  userId   String
+
+  thread Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -1,30 +1,58 @@
-import { useRef } from 'react'
-import { useAuth } from '../../context/AuthContext'
-import { useStory } from '../../context/StoryContext'
-import StoryRing from './StoryRing'
-import { SKINS } from '../profile/UserProfile'
+import { useRef } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useStory } from "../../context/StoryContext.jsx";
+import { useTheme } from "../../context/ThemeContext.jsx";
+import StoryRing from "./StoryRing.jsx";
+
+const SKINS = [
+  {bg:"#FDDBB4",fg:"#8B5E3C"},{bg:"#F5C99A",fg:"#7A4A2A"},
+  {bg:"#E8A87C",fg:"#6B3820"},{bg:"#C68642",fg:"#3E1F00"},
+  {bg:"#8D5524",fg:"#FFD5A8"},{bg:"#4A2912",fg:"#F5C99A"},
+  {bg:"#DBEAFE",fg:"#1D4ED8"},{bg:"#EDE9FE",fg:"#7C3AED"},
+  {bg:"#FCE7F3",fg:"#BE185D"},{bg:"#D1FAE5",fg:"#065F46"},
+];
 
 export default function StoryBar({ onStoryOpen, onAddStory }) {
-  const { user, profile } = useAuth()
-  const { allStories, myStories } = useStory()
-  const scrollRef = useRef(null)
-  const skin = SKINS[profile?.skinIdx ?? 0] || SKINS[0]
+  const { user, profile } = useAuth();
+  const { allStories, myStories } = useStory();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const scrollRef = useRef(null);
 
-  const hasMyStory = myStories.length > 0
-  const myGroup = allStories.find(s => s.isMe)
+  const skin = SKINS[profile?.skinIdx ?? 0] || SKINS[0];
+  const hasMyStory = myStories.length > 0;
+
+  const P = {
+    bg:     isDark ? "#0D1035"  : "#ffffff",
+    border: isDark ? "#1B3066"  : "#c8c8dc",
+    text:   isDark ? "#b8bdd8"  : "#1B3066",
+    muted:  isDark ? "#6B7399"  : "#6B7399",
+    add:    isDark ? "#1B3066"  : "#080B2A",
+  };
 
   return (
-    <div className="flex-shrink-0 border-b border-gray-100 dark:border-white/10 bg-white dark:bg-dark-800">
+    <div style={{
+      flexShrink: 0,
+      borderBottom: `1px solid ${P.border}`,
+      background: P.bg,
+    }}>
       <div
         ref={scrollRef}
-        className="flex items-center gap-4 px-4 py-3 overflow-x-auto"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{
+          display: "flex", alignItems: "center", gap: 16,
+          padding: "10px 16px",
+          overflowX: "auto", scrollbarWidth: "none",
+        }}
       >
-        {/* Add my story */}
-        <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-          <div className="relative">
+        {/* My story / Add button */}
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:5, flexShrink:0 }}>
+          <div style={{ position:"relative" }}>
             <StoryRing
-              user={{ ...user, id: String(user?.id), bg: skin.bg, color: skin.fg, initials: user?.initials }}
+              user={{
+                id: String(user?.id),
+                initials: user?.username?.slice(0,2).toUpperCase() || "??",
+                bg: skin.bg, color: skin.fg,
+              }}
               size={52}
               hasStory={hasMyStory}
               seen={true}
@@ -34,34 +62,53 @@ export default function StoryBar({ onStoryOpen, onAddStory }) {
               }
             />
             {!hasMyStory && (
-              <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-accent flex items-center justify-center border-2 border-white dark:border-dark-800">
+              <div style={{
+                position:"absolute", bottom:-2, right:-2,
+                width:20, height:20, borderRadius:"50%",
+                background:"linear-gradient(135deg,#1B3066,#6B7399)",
+                border:`2px solid ${P.bg}`,
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}>
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
                   <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
               </div>
             )}
           </div>
-          <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
-            {hasMyStory ? 'Минийх' : 'Нэмэх'}
+          <span style={{ fontSize:10, color:P.muted, fontWeight:500 }}>
+            {hasMyStory ? "Минийх" : "Нэмэх"}
           </span>
         </div>
 
-        {/* Team stories */}
+        {/* Divider */}
+        {allStories.filter(g => !g.isMe).length > 0 && (
+          <div style={{ width:1, height:44, background:P.border, flexShrink:0 }}/>
+        )}
+
+        {/* Other stories */}
         {allStories.filter(g => !g.isMe).map(group => (
-          <div key={group.userId} className="flex flex-col items-center gap-1.5 flex-shrink-0">
+          <div key={group.userId} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:5, flexShrink:0 }}>
             <StoryRing
-              user={{ initials: group.userInitials, name: group.userName, color: group.userColor, bg: group.userBg, id: group.userId }}
+              user={{
+                id: group.userId,
+                initials: group.userInitials,
+                bg: group.userBg, color: group.userColor,
+              }}
               size={52}
               hasStory={true}
               seen={group.seen}
               onClick={() => onStoryOpen({ userId: group.userId })}
             />
-            <span className={`text-[10px] font-medium truncate max-w-[52px] ${group.seen ? 'text-gray-400 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300'}`}>
-              {group.userName.split(' ')[0]}
+            <span style={{
+              fontSize:10, fontWeight:500,
+              color: group.seen ? P.muted : P.text,
+              maxWidth:52, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
+            }}>
+              {group.userName.split(" ")[0]}
             </span>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }

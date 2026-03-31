@@ -4,6 +4,18 @@ import { setUserOnline, setUserOffline, getExistingSocket } from "./presence.js"
 import { setIO } from "./socket.js";
 import prisma from "../lib/prisma.js";
 
+// Safely extract username from decoded JWT — handles multiple field name conventions
+const extractUsername = (decoded) => {
+  return (
+    decoded.username ||
+    decoded.name ||
+    decoded.displayName ||
+    decoded.email?.split("@")[0] ||
+    `user_${decoded.id?.slice(0, 6)}` ||
+    "Unknown"
+  );
+};
+
 export const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: { origin: "*", methods: ["GET", "POST"] },
@@ -16,7 +28,13 @@ export const initSocket = (httpServer) => {
     if (!token) return next(new Error("No token provided"));
     try {
       const decoded = verifyToken(token);
-      socket.user = decoded;
+      // Debug — remove this after confirming username works
+      console.log("decoded token fields:", Object.keys(decoded));
+      // Normalize — always have username on socket.user
+      socket.user = {
+        ...decoded,
+        username: extractUsername(decoded),
+      };
       next();
     } catch (err) {
       next(new Error("Invalid token"));
@@ -25,16 +43,14 @@ export const initSocket = (httpServer) => {
 
   io.on("connection", async (socket) => {
     const user = socket.user;
-    console.log(`User connected: ${user.username}`);
+    console.log(`User connected: ${user.username} (${socket.id})`);
 
-    // Kick existing session if connected from another device
+    // Single session enforcement
     const existingSocketId = getExistingSocket(user.id);
     if (existingSocketId && existingSocketId !== socket.id) {
       const existingSocket = io.sockets.sockets.get(existingSocketId);
       if (existingSocket) {
-        existingSocket.emit("session_expired", {
-          message: "You logged in from another device.",
-        });
+        existingSocket.emit("session_expired", { message: "You logged in from another device." });
         existingSocket.disconnect(true);
       }
     }
@@ -49,12 +65,10 @@ export const initSocket = (httpServer) => {
 
     socket.on("join_workspace", (workspaceId) => {
       socket.join(`workspace:${workspaceId}`);
-      console.log(`${user.username} joined workspace:${workspaceId}`);
     });
 
     socket.on("join_channel", (channelId) => {
       socket.join(`channel:${channelId}`);
-      console.log(`${user.username} joined channel:${channelId}`);
     });
 
     socket.on("send_message", (message) => {
@@ -93,12 +107,15 @@ export const initSocket = (httpServer) => {
       });
     });
 
+    // ── Channel calls ──────────────────────────────────────────────
     socket.on("call_join", ({ channelId }) => {
+      socket.join(`channel:${channelId}`);
       socket.to(`channel:${channelId}`).emit("call_user_joined", {
         userId: user.id,
         username: user.username,
         socketId: socket.id,
       });
+      console.log(`${user.username} joined call in channel:${channelId}`);
     });
 
     socket.on("call_leave", ({ channelId }) => {
@@ -118,13 +135,22 @@ export const initSocket = (httpServer) => {
     });
 
     socket.on("call_answer", ({ answer, toSocketId }) => {
-      io.to(toSocketId).emit("call_answer", { answer, fromSocketId: socket.id });
+      io.to(toSocketId).emit("call_answer", {
+        answer,
+        fromSocketId: socket.id,
+        username: user.username,
+        userId: user.id,
+      });
     });
 
     socket.on("call_ice_candidate", ({ candidate, toSocketId }) => {
-      io.to(toSocketId).emit("call_ice_candidate", { candidate, fromSocketId: socket.id });
+      io.to(toSocketId).emit("call_ice_candidate", {
+        candidate,
+        fromSocketId: socket.id,
+      });
     });
 
+    // ── DM calls ───────────────────────────────────────────────────
     socket.on("dm_send", ({ toUserId, message }) => {
       const targetSocket = [...io.sockets.sockets.values()].find(
         (s) => s.user?.id === toUserId
@@ -132,7 +158,7 @@ export const initSocket = (httpServer) => {
       if (targetSocket) targetSocket.emit("dm_new_message", message);
     });
 
-    socket.on("dm_call_offer", ({ offer, toUserId }) => {
+    socket.on("dm_call_offer", ({ offer, toUserId, withVideo }) => {
       const targetSocket = [...io.sockets.sockets.values()].find(
         (s) => s.user?.id === toUserId
       );
@@ -142,16 +168,23 @@ export const initSocket = (httpServer) => {
           fromSocketId: socket.id,
           fromUserId: user.id,
           fromUsername: user.username,
+          withVideo: withVideo || false,
         });
       }
     });
 
     socket.on("dm_call_answer", ({ answer, toSocketId }) => {
-      io.to(toSocketId).emit("dm_call_answer", { answer, fromSocketId: socket.id });
+      io.to(toSocketId).emit("dm_call_answer", {
+        answer,
+        fromSocketId: socket.id,
+      });
     });
 
     socket.on("dm_call_ice_candidate", ({ candidate, toSocketId }) => {
-      io.to(toSocketId).emit("dm_call_ice_candidate", { candidate, fromSocketId: socket.id });
+      io.to(toSocketId).emit("dm_call_ice_candidate", {
+        candidate,
+        fromSocketId: socket.id,
+      });
     });
 
     socket.on("dm_call_end", ({ toUserId }) => {
@@ -161,6 +194,7 @@ export const initSocket = (httpServer) => {
       if (targetSocket) targetSocket.emit("dm_call_ended", { fromUserId: user.id });
     });
 
+    // ── Friends ────────────────────────────────────────────────────
     socket.on("friend_request_sent", ({ toUserId, request }) => {
       const targetSocket = [...io.sockets.sockets.values()].find(
         (s) => s.user?.id === toUserId
